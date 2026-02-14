@@ -1,15 +1,15 @@
-import axios from "axios";
+import api from "./api";
 
 export const getRecommendations = async ({ mood, craving }) => {
   try {
-    const res = await axios.get("http://localhost:8000/recommendations", {
+    const res = await api.post("/recommendations", {
       params: { mood, craving },
     });
 
     console.log("REAL BACKEND RESPONSE:", res.data);
 
     return {
-      recipes: res.data.recommended_recipe.data,
+      recipes: [res.data.recommended_recipe] || [],
       context: res.data.context,
     };
   } catch (error) {
