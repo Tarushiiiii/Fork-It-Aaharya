@@ -1,38 +1,8 @@
 import { useState } from "react";
 import { cn } from "../../libs/utils";
-import {
-  Smile,
-  Moon,
-  AlertCircle,
-  Brain,
-  Cloud,
-  Zap,
-  Candy,
-  Flame,
-  Droplet,
-  Cheese,
-  Cookie,
-  Soup,
-  Sparkles,
-} from "lucide-react";
-
-const MOODS = [
-  { id: "happy", label: "Happy", icon: Smile },
-  { id: "tired", label: "Tired", icon: Moon },
-  { id: "stressed", label: "Stressed", icon: AlertCircle },
-  { id: "anxious", label: "Anxious", icon: Brain },
-  { id: "calm", label: "Calm", icon: Cloud },
-  { id: "energetic", label: "Energetic", icon: Zap },
-];
-
-const CRAVINGS = [
-  { id: "sweet", label: "Sweet", icon: Candy },
-  { id: "spicy", label: "Spicy", icon: Flame },
-  { id: "salty", label: "Salty", icon: Droplet },
-  { id: "cheesy", label: "Cheesy", icon: Cheese },
-  { id: "crunchy", label: "Crunchy", icon: Cookie },
-  { id: "comfort", label: "Comfort", icon: Soup },
-];
+import { Sparkles } from "lucide-react";
+import { CRAVINGS } from "../../store/constants";
+import { MOODS } from "../../store/constants";
 
 export const MoodCravingSelector = ({ onSubmit, loading }) => {
   const [mood, setMood] = useState(null);
@@ -58,8 +28,8 @@ export const MoodCravingSelector = ({ onSubmit, loading }) => {
               className={cn(
                 "flex flex-col items-center gap-2 p-4 rounded-xl border transition",
                 mood === id
-                  ? "border-primary bg-primary/5"
-                  : "border-sage-200 hover:border-primary/40",
+                  ? "border-[#568f6c] bg-[#568f6c]/5"
+                  : "border-sage-200 hover:border-[#568f6c]/40",
               )}
             >
               <Icon className="w-6 h-6" />

@@ -6,6 +6,7 @@ import { RecipeRecommendations } from "../components/dashboard/recipeRecommendat
 import { FlavorInsightCard } from "../components/dashboard/flavorInsightCard";
 import { GamificationBadge } from "../components/dashboard/gamificationBadge";
 import { getRecommendations } from "../services/recommendation.service";
+import axios from "axios";
 
 export const Dashboard = () => {
   const [recipes, setRecipes] = useState([]);
@@ -18,9 +19,12 @@ export const Dashboard = () => {
     setError(null);
 
     try {
-      const res = await getRecommendations({ mood, craving });
-      setRecipes(res?.recommended_recipes || []);
-      setCycleInfo(res?.context || null);
+      const { recipes, context } = await getRecommendations({ mood, craving });
+
+      console.log("RECIPES:", recipes);
+
+      setRecipes(recipes);
+      setCycleInfo(context);
     } catch (err) {
       console.error(err);
       setError("Could not fetch recommendations. Please try again.");
