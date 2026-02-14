@@ -7,6 +7,8 @@ import { Step1 } from "../components/onboarding/step1";
 import { Step2 } from "../components/onboarding/step2";
 import { Step3 } from "../components/onboarding/step3";
 import { Step4 } from "../components/onboarding/step4";
+import { createProfile } from "../services/profile.service";
+
 // import { saveProfile } from "@/services/profile.api";
 
 export const Onboarding = () => {
@@ -57,12 +59,13 @@ export const Onboarding = () => {
     setError(null);
 
     try {
-      await saveProfile({
-        lifeSituation: selections.lifeSituation,
-        lifeStage: selections.lifeStage,
-        pregnancyPhase: selections.pregnancyPhase,
+      await createProfile({
         lastPeriod: selections.lastPeriod || undefined,
-        cycleLength: selections.cycleLength ? cycleLengthNumber : undefined,
+        cycleLength: selections.cycleLength
+          ? Number(selections.cycleLength)
+          : undefined,
+        mood: selections.lifeStage,
+        craving: selections.lifeSituation,
       });
 
       navigate("/dashboard");
