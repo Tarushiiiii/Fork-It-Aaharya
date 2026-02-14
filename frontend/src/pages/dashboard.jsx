@@ -1,47 +1,67 @@
+import { useState } from "react";
 import { WelcomeHeader } from "../components/dashboard/welcomeHeader";
 import { CyclePhaseCard } from "../components/dashboard/cyclePhaseCard";
 import { MoodCravingSelector } from "../components/dashboard/moodCravingSelector";
 import { RecipeRecommendations } from "../components/dashboard/recipeRecommendations";
 import { FlavorInsightCard } from "../components/dashboard/flavorInsightCard";
 import { GamificationBadge } from "../components/dashboard/gamificationBadge";
-import { useEffect, useState } from "react";
+import { getRecommendations } from "../services/recommendation.service";
 
 export const Dashboard = () => {
   const [recipes, setRecipes] = useState([]);
   const [cycleInfo, setCycleInfo] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
 
-  const handleMoodCravingChange = async (mood, craving) => {
-    // add API call here later
+  const handleMoodCravingSubmit = async (mood, craving) => {
+    setLoading(true);
+    setError(null);
+
+    try {
+      const res = await getRecommendations({ mood, craving });
+      setRecipes(res?.recommended_recipes || []);
+      setCycleInfo(res?.context || null);
+    } catch (err) {
+      console.error(err);
+      setError("Could not fetch recommendations. Please try again.");
+    } finally {
+      setLoading(false);
+    }
   };
 
-  // useEffect(() => {
-  //   fetchInitialRecommendations();
-  // }, []);
-
   return (
-    <div>
-      <section className="py-8 min-h-[calc(100vh-5rem)]">
-        <div className="container mx-auto lg:px-8 px-[3px]">
-          <WelcomeHeader />
+    <section className="py-8 min-h-[calc(100vh-5rem)]">
+      <div className="container mx-auto lg:px-8 px-[3px]">
+        <WelcomeHeader />
 
-          <div className="grid gap-6 lg:grid-cols-3">
-            <div className="lg:col-span-1 space-y-6">
-              <CyclePhaseCard
-                phase={cycleInfo?.phase}
-                dayInPhase={cycleInfo?.dayInPhase}
-                totalDaysInPhase={cycleInfo?.totalDaysInPhase}
-              />
-              <GamificationBadge />
-            </div>
+        <div className="grid gap-6 lg:grid-cols-3">
+          {/* LEFT */}
+          <div className="lg:col-span-1 space-y-6">
+            <CyclePhaseCard
+              phase={cycleInfo?.phase}
+              dayInPhase={cycleInfo?.dayInPhase}
+              totalDaysInPhase={cycleInfo?.totalDaysInPhase}
+            />
+            <GamificationBadge />
+          </div>
 
-            <div className="lg:col-span-2 space-y-6">
-              <MoodCravingSelector onSelectionChange={handleMoodCravingChange} />
-              <RecipeRecommendations recipes={recipes} />
-              <FlavorInsightCard />
-            </div>
+          {/* RIGHT */}
+          <div className="lg:col-span-2 space-y-6">
+            <MoodCravingSelector
+              onSubmit={handleMoodCravingSubmit}
+              loading={loading}
+            />
+
+            {error && (
+              <p className="text-red-500 text-sm text-center">{error}</p>
+            )}
+
+            <RecipeRecommendations recipes={recipes} loading={loading} />
+
+            <FlavorInsightCard />
           </div>
         </div>
-      </section>
-    </div>
+      </div>
+    </section>
   );
 };

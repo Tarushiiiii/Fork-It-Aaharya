@@ -1,54 +1,25 @@
-import { useState } from "react";
-import { getRecommendations } from "../services/recommendation.service";
-import { MoodCravingSelector } from "./MoodCravingSelector";
+export const RecipeRecommendations = ({ recipes, loading }) => {
+  if (loading) {
+    return <p className="text-center">Loading recommendations...</p>;
+  }
 
-export const RecipeRecommendations = () => {
-  const [input, setInput] = useState({ mood: "", craving: "" });
-  const [data, setData] = useState(null);
-  const [loading, setLoading] = useState(false);
-
-  const handleChange = (field, value) => {
-    setInput((prev) => ({ ...prev, [field]: value }));
-  };
-
-  const fetchRecommendations = async () => {
-    setLoading(true);
-    const res = await getRecommendations(input);
-    setData(res);
-    setLoading(false);
-  };
+  if (!recipes || recipes.length === 0) {
+    return (
+      <p className="text-center text-gray-500">
+        Select your mood and craving to get recommendations
+      </p>
+    );
+  }
 
   return (
-    <div className="space-y-6">
-      <MoodCravingSelector value={input} onChange={handleChange} />
-
-      <button onClick={fetchRecommendations} disabled={loading}>
-        {loading ? "Loading..." : "Get Recommendations"}
-      </button>
-
-      {data && (
-        <>
-          {/* CONTEXT */}
-          <div>
-            <h3>Current Phase: {data.context.phase}</h3>
-            <p>
-              Day {data.context.dayInPhase} of {data.context.totalDaysInPhase}
-            </p>
-            <p>Focus nutrients: {data.context.focusNutrients.join(", ")}</p>
-          </div>
-
-          {/* RECIPES */}
-          <div className="space-y-4">
-            {data.recommended_recipes.map((recipe) => (
-              <div key={recipe.id} className="border p-4 rounded">
-                <h4>{recipe.title}</h4>
-                <p>{recipe.reason}</p>
-                <p>{recipe.calories} kcal</p>
-              </div>
-            ))}
-          </div>
-        </>
-      )}
+    <div className="space-y-4">
+      {recipes.map((recipe) => (
+        <div key={recipe.id} className="border rounded-xl p-4 bg-white">
+          <h4 className="font-semibold">{recipe.title}</h4>
+          <p className="text-sm text-gray-600">{recipe.reason}</p>
+          <p className="text-xs text-gray-500 mt-1">{recipe.calories} kcal</p>
+        </div>
+      ))}
     </div>
   );
 };
