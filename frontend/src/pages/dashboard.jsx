@@ -19,12 +19,24 @@ export const Dashboard = () => {
     setError(null);
 
     try {
-      const { recipes, context } = await getRecommendations({ mood, craving });
+      // 3 parallel API calls
+      const responses = await Promise.all([
+        getRecommendations({ mood, craving }),
+        getRecommendations({ mood, craving }),
+        getRecommendations({ mood, craving }),
+      ]);
 
-      console.log("RECIPES:", recipes);
+      // Combine all recipes into one array
+      const allRecipes = responses.flatMap((res) => res?.recipes || []);
 
-      setRecipes(recipes);
-      setCycleInfo(context);
+      // (Optional) remove duplicates by recipe_id / title
+      const uniqueRecipes = Array.from(
+        new Map(allRecipes.map((r) => [r.recipe_id ?? r.title, r])).values(),
+      );
+
+      // Use context from first response (or merge if needed)
+      setRecipes(uniqueRecipes);
+      setCycleInfo(responses[0]?.context ?? null);
     } catch (err) {
       console.error(err);
       setError("Could not fetch recommendations. Please try again.");
