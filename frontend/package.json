@@ -1,5 +1,5 @@
 {
-  "name": "heavy_metals",
+  "name": "aaharya-frontend",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -37,8 +37,6 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.35.0",
-    "@types/react": "^19.1.13",
-    "@types/react-dom": "^19.1.9",
     "@vitejs/plugin-react": "^5.0.2",
     "autoprefixer": "^10.4.21",
     "baseline-browser-mapping": "^2.8.31",
