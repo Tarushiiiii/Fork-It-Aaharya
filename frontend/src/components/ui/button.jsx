@@ -5,12 +5,12 @@ import { cva } from "class-variance-authority";
 import { cn } from "../../libs/utils";
 
 const buttonVariants = cva(
-  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-lg text-sm font-medium ring-offset-background transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0",
+  "inline-flex items-center justify-center gap-2 [#0000]space-nowrap rounded-lg text-sm font-medium ring-offset-background transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0",
   {
     variants: {
       variant: {
         default:
-          "bg-primary text-primary-foreground hover:bg-primary/90 shadow-soft hover:shadow-card",
+          "bg-[#568f6c] text-white hover:bg-[#4f8264] shadow-soft hover:shadow-card",
         destructive:
           "bg-destructive text-destructive-foreground hover:bg-destructive/90",
         outline:
@@ -18,16 +18,14 @@ const buttonVariants = cva(
         secondary:
           "bg-secondary text-secondary-foreground hover:bg-secondary/80",
         ghost: "hover:bg-accent hover:text-accent-foreground",
-        link: "text-primary underline-offset-4 hover:underline",
+        link: "text-[#568f6c] underline-offset-4 hover:underline",
 
         // Aaharya custom variants
-        hero:
-          "bg-primary text-primary-foreground hover:bg-primary/90 shadow-elevated hover:shadow-xl hover:-translate-y-0.5 font-semibold text-base",
-        soft:
-          "bg-sage-100 text-sage-700 hover:bg-sage-200 border border-sage-200",
+        hero: "bg-[#568f6c] text-white hover:bg-[#4f8264] shadow-elevated hover:shadow-xl hover:-translate-y-0.5 font-semibold text-base",
+        soft: "bg-sage-100 text-sage-700 hover:bg-sage-200 border border-sage-200",
         lavender:
           "bg-lavender-200 text-lavender-500 hover:bg-lavender-300 border border-lavender-300",
-        nav: "text-foreground/80 hover:text-primary hover:bg-sage-50 font-medium",
+        nav: "text-foreground/80 hover:text-[#568f6c] hover:bg-sage-50 font-medium",
       },
       size: {
         default: "h-10 px-4 py-2",
@@ -41,7 +39,7 @@ const buttonVariants = cva(
       variant: "default",
       size: "default",
     },
-  }
+  },
 );
 
 const Button = React.forwardRef(
@@ -55,7 +53,7 @@ const Button = React.forwardRef(
         {...props}
       />
     );
-  }
+  },
 );
 
 Button.displayName = "Button";

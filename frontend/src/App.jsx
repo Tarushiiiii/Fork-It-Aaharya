@@ -1,16 +1,18 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 
-import {Home} from "./pages/home";
-import {About} from "./pages/about";
-import {Dashboard} from "./pages/dashboard";
-import {Features} from "./pages/features";
-import {HowItWorks} from "./pages/how-it-works";
-import {Onboarding} from "./pages/onboarding";
-import {Vision} from "./pages/vision";
-import {WhyAaharya} from "./pages/why-aaharya";
-import {NotFound} from "./pages/not-found";
+import { Home } from "./pages/home";
+import { About } from "./pages/about";
+import { Dashboard } from "./pages/dashboard";
+import { Features } from "./pages/features";
+import { HowItWorks } from "./pages/how-it-works";
+import { Onboarding } from "./pages/onboarding";
+import { Vision } from "./pages/vision";
+import { WhyAaharya } from "./pages/why-aaharya";
+import { NotFound } from "./pages/not-found";
 
 import { PageLayout } from "./components/layout/pageLayout";
+
+import "./index.css";
 
 const router = createBrowserRouter([
   {
