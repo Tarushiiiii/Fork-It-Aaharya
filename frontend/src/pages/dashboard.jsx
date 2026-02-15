@@ -9,32 +9,42 @@ import { getRecommendations } from "../services/recommendation.service";
 import axios from "axios";
 
 export const Dashboard = () => {
-  const [recipes, setRecipes] = useState([]);
+  const [ingredients, setIngredients] = useState([]);
+  const [craving, setCraving] = useState(null);
+  const [swaps, setSwaps] = useState([]);
   const [cycleInfo, setCycleInfo] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  const handleMoodCravingSubmit = async (mood, craving) => {
+  const handleMoodCravingSubmit = async (mood, cravingInput) => {
     setLoading(true);
     setError(null);
 
     try {
-      // 3 parallel API calls
       const responses = await Promise.all([
-        getRecommendations({ mood, craving }),
-        getRecommendations({ mood, craving }),
-        getRecommendations({ mood, craving }),
+        getRecommendations({ mood, craving: cravingInput }),
+        getRecommendations({ mood, craving: cravingInput }),
+        getRecommendations({ mood, craving: cravingInput }),
       ]);
 
-      // Combine all recipes into one array
+      // collect recipes
       const allRecipes = responses.flatMap((res) => res?.recipes || []);
 
-      // (Optional) remove duplicates by recipe_id / title
       const uniqueRecipes = Array.from(
-        new Map(allRecipes.map((r) => [r.recipe_id ?? r.title, r])).values(),
+        new Map(allRecipes.map((r) => [r.recipe_id ?? r.title, r])).values()
       );
 
-      // Use context from first response (or merge if needed)
+      // collect ingredients
+      const allIngredients = uniqueRecipes.flatMap((recipe) => {
+        if (!recipe.ingredients) return [];
+        return recipe.ingredients.split(",").map((i) => i.trim());
+      });
+
+      setIngredients([...new Set(allIngredients)]);
+
+      // store craving from backend context
+      setCraving(responses[0]?.context?.craving ?? cravingInput);
+
       setRecipes(uniqueRecipes);
       setCycleInfo(responses[0]?.context ?? null);
     } catch (err) {
@@ -44,6 +54,7 @@ export const Dashboard = () => {
       setLoading(false);
     }
   };
+
 
   return (
     <section className="py-8 min-h-[calc(100vh-5rem)]">
@@ -73,8 +84,11 @@ export const Dashboard = () => {
             )}
 
             <RecipeRecommendations recipes={recipes} loading={loading} />
-
-            <FlavorInsightCard />
+            
+            <FlavorInsightCard
+              ingredients={ingredients}
+              craving={craving}
+            />
           </div>
         </div>
       </div>
