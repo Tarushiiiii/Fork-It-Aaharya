@@ -4,6 +4,8 @@ import cors from "cors";
 
 import profileRoutes from "./routes/profile.routes.js";
 import recommendationRoutes from "./routes/recommendations.routes.js";
+import flavorRoutes from "./routes/flavor.routes.js";
+
 
 const app = express();
 
@@ -22,5 +24,7 @@ app.get("/health", (_, res) => {
 
 app.use("/profile", profileRoutes);
 app.use("/recommendations", recommendationRoutes);
+
+app.use("/flavor", flavorRoutes);
 
 export default app;
