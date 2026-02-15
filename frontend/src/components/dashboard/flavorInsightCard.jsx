@@ -1,49 +1,161 @@
-export function FlavorInsightCard({ ingredients = [], craving }) {
+import { useEffect, useState } from "react";
+import { ArrowRight, FlaskConical, Lightbulb } from "lucide-react";
+import { getSwaps } from "../../services/flavor.service";
 
-  const getSwap = (ingredient, craving) => {
-    if (craving === "sweet") return "dates / jaggery";
-    if (craving === "salty") return "roasted chana";
-    if (craving === "comfort") return "oats";
-    return "healthier alternative";
+export function FlavorInsightCard({ flavor, missingIngredient }) {
+  const [swapData, setSwapData] = useState(null);
+  const [loading, setLoading] = useState(false);
+
+  const fetchSwap = async () => {
+    if (!flavor || !missingIngredient) return;
+    setLoading(true);
+    const data = await getSwaps({ flavor, missingIngredient });
+    setSwapData(data);
+    setLoading(false);
   };
 
+  useEffect(() => {
+    fetchSwap();
+  }, [flavor, missingIngredient]);
+
   return (
-    <Card className="border-sage-200 shadow-soft overflow-hidden">
-      <CardHeader className="pb-4 bg-gradient-to-r from-lavender-50 to-sage-50">
-        <CardTitle className="font-serif text-xl flex items-center gap-2">
-          <FlaskConical className="w-6 h-6 text-lavender-400" />
-          Today’s Flavor Insight
-        </CardTitle>
-      </CardHeader>
-
-      <CardContent className="p-6 space-y-4">
-        {ingredients.map((ingredient, index) => (
-          <div
-            key={`${ingredient}-${index}`}
-            className="p-4 rounded-xl bg-cream-50 border border-sage-100"
-          >
-            <div className="flex items-center gap-3 mb-2">
-              <span className="line-through text-rose-600 text-sm">
-                {ingredient}
-              </span>
-
-              <ArrowRight className="w-4 h-4 text-muted-foreground" />
-
-              <span className="text-sage-700 text-sm font-medium">
-                {getSwap(ingredient, craving)}
-              </span>
+    <div
+      style={{
+        border: "1px solid #cfe3d6",
+        borderRadius: 20,
+        padding: 24,
+        background: "#f8faf8",
+        boxShadow: "0 4px 24px rgba(0,0,0,0.04)",
+      }}
+    >
+      {/* Header */}
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          marginBottom: 16,
+        }}
+      >
+        <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+          <FlaskConical color="#9b87f5" />
+          <div>
+            <div style={{ fontSize: 22, fontWeight: 600 }}>
+              Today’s Flavor Swaps
             </div>
-
-            <p className="text-sm font-medium">
-              Better for your {craving ?? "health"}
-            </p>
-
-            <p className="text-xs italic text-muted-foreground">
-              Similar flavor compounds, lighter on digestion ✨
-            </p>
+            <div style={{ fontSize: 14, color: "#6b7280" }}>
+              Smart substitutions that keep the taste you love
+            </div>
           </div>
-        ))}
-      </CardContent>
-    </Card>
+        </div>
+
+        <span
+          style={{
+            background: "#e9ddff",
+            color: "#7c3aed",
+            padding: "6px 12px",
+            borderRadius: 999,
+            fontSize: 12,
+            fontWeight: 600,
+          }}
+        >
+          ✨ FlavorDB
+        </span>
+      </div>
+
+      {/* Swap Card */}
+      {loading && (
+        <p style={{ fontSize: 14, color: "#6b7280" }}>
+          Finding best swap...
+        </p>
+      )}
+
+      {swapData && (
+        <div
+          style={{
+            border: "1px solid #d7e8dd",
+            borderRadius: 16,
+            padding: 18,
+            marginBottom: 16,
+            background: "#ffffff",
+          }}
+        >
+          {/* Pills */}
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: 12,
+              marginBottom: 10,
+            }}
+          >
+            <span
+              style={{
+                background: "#f9d6d5",
+                color: "#b91c1c",
+                padding: "6px 14px",
+                borderRadius: 999,
+                fontSize: 13,
+                textDecoration: "line-through",
+              }}
+            >
+              {swapData.original}
+            </span>
+
+            <ArrowRight size={16} color="#6b7280" />
+
+            <span
+              style={{
+                background: "#d7e8dd",
+                color: "#166534",
+                padding: "6px 14px",
+                borderRadius: 999,
+                fontSize: 13,
+                fontWeight: 600,
+              }}
+            >
+              {swapData.replacement}
+            </span>
+          </div>
+
+          {/* Benefit line */}
+          <div style={{ fontSize: 16, fontWeight: 500, marginBottom: 4 }}>
+            {swapData.reason}
+          </div>
+
+          {/* Flavor note */}
+          {swapData.flavorPairings?.length > 0 && (
+            <div style={{ fontSize: 14, color: "#6b7280" }}>
+              ✨ {swapData.flavorPairings.join(", ")} flavor compatibility
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* How it works box */}
+      <div
+        style={{
+          border: "1px solid #e5e7eb",
+          borderRadius: 16,
+          padding: 16,
+          background: "#f3f4f6",
+          display: "flex",
+          gap: 12,
+        }}
+      >
+        <Lightbulb color="#f59e0b" />
+
+        <div>
+          <div style={{ fontWeight: 600, marginBottom: 4 }}>
+            How it works
+          </div>
+          <div style={{ fontSize: 14, color: "#6b7280" }}>
+            FlavorDB matches ingredients by their flavor compounds. When we
+            suggest a swap, it's because the replacement shares similar taste
+            molecules — so you won't miss the original!
+          </div>
+        </div>
+      </div>
+    </div>
   );
 }
